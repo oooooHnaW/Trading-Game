@@ -6,4 +6,4 @@ class Stock:
         self.val = Value
 
     def priceChange(self, Effect):
-        self.val += Effect/100 * self.val
+        self.val += round(Effect/100 * self.val, 2)
