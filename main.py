@@ -40,18 +40,21 @@ def main():
             eventType = choice(randomEvents) # Chooses a random event
             EventHappened = True
 
-            for stock in stocks:
-                if eventType != "none":
-                    print(f"Affected sector: {affectedSector} | Event type: {eventType.name}") # Displays information and changes to the market
-                    print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Old price: ${stock.val}", end="")
+            if eventType != "none": # Checks that an event has happened first.
+                print(f"Affected sector: {affectedSector} | Event type: {eventType.name}") # Displays information and changes to the market
+                for stock in stocks:
+                    if eventType != "none": # Checks that an event has happened first
 
-                    if affectedSector == "all":
-                        stock.priceChange(eventType.effect)
-                    elif stock.sector == affectedSector:
-                        stock.priceChange(eventType.effect)
-                    print(f" | New price: ${stock.val}")
-
-                print()
+                        if affectedSector == "all":
+                            print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Old price: ${stock.val}", end="")
+                            stock.priceChange(eventType.effect)
+                            print(f" | New price: ${stock.val}\n")
+                        elif stock.sector == affectedSector:
+                            print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Old price: ${stock.val}", end="")
+                            stock.priceChange(eventType.effect)
+                            print(f" | New price: ${stock.val}\n")
+            else:
+                print("An uneventful 10 seconds...")
 
         elif floor(time) % CLOCKRATE != 0 and EventHappened:
             EventHappened = False
