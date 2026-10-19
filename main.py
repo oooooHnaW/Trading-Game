@@ -5,6 +5,7 @@ from event import Event
 from math import floor
 import os
 import subprocess
+from market import market
 
 # Init
 CLOCKRATE = 10 # 10 seconds per update - basically clock speed
@@ -22,11 +23,11 @@ sectors = {"all"}
 
 stocks = []
 
-stocks.append(Stock("Car Co.", "CARC", "automobile", 100))
-stocks.append(Stock("Chug Soda Ltd.", "CGSO", "beverages", 40))
-stocks.append(Stock("Guch Soda & Co.", "GCSO", "beverages", 35))
-stocks.append(Stock("Teckux", "TUX", "technology", 20))
-stocks.append(Stock("Tractors Inc.", "TRAC", "automobile", 90))
+stocks.append(Stock("Car Co.", "CARC", "automobile", 100, 100))
+stocks.append(Stock("Chug Soda Ltd.", "CGSO", "beverages", 40, 200))
+stocks.append(Stock("Guch Soda & Co.", "GCSO", "beverages", 35, 150))
+stocks.append(Stock("Teckux", "TUX", "technology", 20, 50))
+stocks.append(Stock("Tractors Inc.", "TRAC", "automobile", 90, 150))
 
 # Adds the available sectors - will be needed for random events
 for stock in stocks:
@@ -49,6 +50,7 @@ def stockDisplay(stocks, sector, event):
                 else:
                     stockIncrease(stock, event)
 
+        # Displays information about what has happened this round
         print("BREAKING NEWS")
         print(f"Event: {event.name} | Affected sectors: {sector} | Percentage change: {event.effect}%")
     else:
@@ -79,6 +81,8 @@ def main():
             EventHappened = True
 
             stockDisplay(stocks, affectedSector, eventType)
+            
+            market() # Does the actual trading, look into market.py
 
         elif floor(time) % CLOCKRATE != 0 and EventHappened:
             EventHappened = False
