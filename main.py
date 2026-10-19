@@ -3,9 +3,8 @@ from time import perf_counter
 from stock import Stock
 from event import Event
 from math import floor
-import os
-import subprocess
 from market import market
+from display import stockDisplay, clearScreen
 
 # Init
 CLOCKRATE = 10 # 10 seconds per update - basically clock speed
@@ -33,40 +32,6 @@ stocks.append(Stock("Tractors Inc.", "TRAC", "automobile", 90, 150))
 for stock in stocks:
     sectors.add(stock.sector)
 
-def clearScreen():
-    if os.name == "nt":
-        subprocess.run("cls", shell=True)
-    else:
-        subprocess.run("clear")
-
-def stockDisplay(stocks, sector, event):
-    if event != "none":
-        for stock in stocks:
-            if stock.sector != sector and sector != "all":
-                print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Price: ${stock.val}\n")
-            else:
-                if event.effect < 0:
-                    stockDecrease(stock, event)
-                else:
-                    stockIncrease(stock, event)
-
-        # Displays information about what has happened this round
-        print("BREAKING NEWS")
-        print(f"Event: {event.name} | Affected sectors: {sector} | Percentage change: {event.effect}%")
-    else:
-        for stock in stocks:
-            print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Price: ${stock.val}\n")
-
-def stockDecrease(stock, event):
-    print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Price: ${stock.val}", end="")
-    stock.priceChange(event.effect)
-    print(f" | New price:\033[31m ${stock.val}\033[0m\n")
-
-def stockIncrease(stock, event):
-    print(f"Stock: {stock.symbol} - {stock.name} | Sector: {stock.sector} | Price: ${stock.val}", end="")
-    stock.priceChange(event.effect)
-    print(f" | New price:\033[32m ${stock.val}\033[0m\n")
-
 def main():
     startTime = perf_counter()
     EventHappened = False
@@ -81,7 +46,7 @@ def main():
             EventHappened = True
 
             stockDisplay(stocks, affectedSector, eventType)
-            
+
             market() # Does the actual trading, look into market.py
 
         elif floor(time) % CLOCKRATE != 0 and EventHappened:
